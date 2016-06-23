@@ -9,15 +9,29 @@
  */
 
 require_once 'include/PageTemplater.php';
-
+require_once 'include/parseCSV.php';
 
 add_action('admin_menu', 'pt_plugin_menu');
 add_action('init', 'country_init');
 add_action('init', 'create_country_post_type');
 add_action('init', 'create_provider_post_type');
-add_action('init', 'pt_plugin_register_shortcodes');
+
+add_action("admin_post_parse_csv", "parse_csv");
+add_action("admin_post_nopriv_parse_csv", "parse_csv");
+//add_action('init', 'pt_plugin_register_shortcodes');
 register_activation_hook(__FILE__, 'pt_plugin_activation');
 register_deactivation_hook(__FILE__, 'pt_plugin_deactivation');
+
+if (!defined('RC_TC_BASE_FILE')) {
+    define('RC_TC_BASE_FILE', __FILE__);
+}
+
+if (!defined('RC_TC_BASE_DIR')) {
+    define('RC_TC_BASE_DIR', dirname(RC_TC_BASE_FILE));
+}
+if (!defined('RC_TC_PLUGIN_URL')) {
+    define('RC_TC_PLUGIN_URL', plugin_dir_url(__FILE__));
+}
 
 function pt_plugin_activation() {
     insert_countries_page();
@@ -25,7 +39,18 @@ function pt_plugin_activation() {
 
 function pt_plugin_deactivation() {
     $page = get_page_by_title("Countries");
-    wp_delete_post($page->ID);
+    $providers = new WP_Query(array("post_type" => "provider", 'posts_per_page' => -1));
+    $countries = new WP_Query(array("post_type" => "country", 'posts_per_page' => -1));
+    if($providers->have_posts()){
+        while($providers->have_posts()){
+            $providers->the_post();
+            wp_delete_post(the_ID(), true);
+            
+        }
+        wp_reset_postdata();
+    }
+   
+    wp_delete_post($page->ID, true);
 }
 
 function pt_plugin_menu() {
@@ -39,8 +64,11 @@ function pt_plugin_options() {
     ?>
     <div class="wrap">
         <h3>Upload data in .csv</h3>
-        <input type="file" name="fileToUpload" id="fileToUpload">
-        <input id="sendCSV" type="submit" value="Sent" name="submit">
+        <form action="<?php echo site_url();?>/wp-admin/admin-post.php" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="action" value="parse_csv">
+            <input type="file" name="csv" id="fileToUpload">
+            <input id="sendCSV" type="submit" value="Send" name="submit">
+        </form>
     </div>
     <?php
 }
@@ -79,6 +107,9 @@ function insert_countries_page() {
     wp_insert_post($args);
 }
 
+/*
+ * there are unnessecery
+ * 
 function pt_plugin_register_shortcodes() {
     add_shortcode('country-list', 'country_list_shortcode');
     add_shortcode('provider-list', 'provider_list_shortcode');
@@ -115,3 +146,4 @@ function provider_list_shortcode($atts) {
     $list = "";
     return $list;
 }
+*/
