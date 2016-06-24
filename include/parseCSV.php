@@ -16,24 +16,27 @@ function parse_csv() {
     }
     $countriesList = array();
     $providersList = array();
-    $cp = array();
-    
+    $countriesToProviders = array();
+
     foreach ($data as $record) {
         $i = 0;
-        if (strlen($record["Code"]) <= 3) {
-            $countriesList[] = $record;
-            $cp[0][$i] = $record["Code Name"]; 
-            $i++;
-        } else {
+        $country = findCountry($record, $countriesList);
+        if ($country) {
             $providersList[] = $record;
-            $cp[$cp[0][$i]][] = $record;
+            $countriesToProviders[$country][] = $record;
+        } else {
+            $countriesList[] = $record;
+            $countriesToProviders[0][$i] = $record["Code Name"];
+            $i++;
         }
     }
-    foreach ($countriesList as $country){
-        $content = "<table><thead></thead><tbody>";
-        foreach($cp[$country["Code Name"]] as $provider){
+    foreach ($countriesList as $country) {
+        $content = "<table><thead><tr><th>Code</th><th>Name</th><th>Rate</th></tr></thead><tbody>";
+        foreach ($countriesToProviders[$country["Code Name"]] as $provider) {
             $content .= '<tr>';
-            $content .= '<td>'. $provider["Code Name"]. '</td>';
+            $content .= '<td>' . $provider["Code"] . '</td>';
+            $content .= '<td>' . $provider["Code Name"] . '</td>';
+            $content .= '<td>' . $provider["Rate"] . '</td>';
             $content .= '</tr>';
         }
         $content .= "</tbody></table>";
@@ -43,28 +46,16 @@ function parse_csv() {
             'post_status' => 'publish',
             'post_content' => $content,
         );
-        $id = wp_insert_post($args);
-    }
-    foreach ($providersList as $provider) {
-        $args = array(
-            'post_title' => $provider['Code Name'],
-            'post_type' => 'provider',
-            'post_status' => 'publish'
-        );
-        $id = wp_insert_post($args);
-        $country = findCountry($provider["Code"], $countriesList);
-        if ($country) {
-            wp_set_object_terms($id, $country, 'country');
-        }
+        wp_insert_post($args);
     }
 // create posts for each provider and country nad check if it exists
 // 
 //wp_redirect('http://localhost/PluginFW/wp-admin/options-general.php?page=price-table-plugin');
 }
 
-function findCountry($code, $countries) {
+function findCountry($record, $countries) {
     foreach ($countries as $country) {
-        if (strpos($code, $country["Code"]) === 0) {
+        if ((strpos($record["Code"], $country["Code"]) === 0) || (strpos($record["Code Name"], $country["Code Name"]) === 0)) {
             return $country["Code Name"];
         }
     }

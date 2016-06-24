@@ -1,33 +1,10 @@
 <?php
 get_header();
-$post = get_post();
-$country = $post->post_name;
-$args = array(
-    'post_type' => 'country',
-);
-$query = new WP_Query($args);
+global $post;
 ?>
 <div class="container">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Code</th>
-                <th>Destination</th>
-                <th>Price USD/min</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <?php while ($query->have_posts()): ?>
-                    <?php
-                    $query->the_post();
-                    
-                endwhile;
-                ?>
-            </tr>
-        </tbody>
-    </table>
+    <h2><?php echo $post->post_title; ?></h2>
+    <p><?php echo $post->post_content; ?></p>
 </div>
 <?php
-get_sidebar();
 get_footer();

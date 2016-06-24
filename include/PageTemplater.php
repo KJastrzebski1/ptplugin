@@ -6,7 +6,6 @@ add_filter('template_include', 'pt_plugin_template_chooser');
 
 function pt_plugin_template_chooser($template) {
     global $post;
-    
     if ( $post->post_name == 'countries') {
        return rc_tc_get_template_hierarchy('countries');
     }

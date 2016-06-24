@@ -1,8 +1,8 @@
 <?php
 /*
   Plugin Name: PriceTablePlugin
-  Plugin URI: https://github.com/theantichris/wordpress-plugin-boilerplate
-  Description: An object oriented boilerplate for developing a WordPress plugin.
+  Plugin URI: 
+  Description: 
   Version: 0.1
   Author: Krzysztof Jastrzebski
   Author URI: http://www.polcode.net
@@ -14,7 +14,6 @@ require_once 'include/parseCSV.php';
 add_action('admin_menu', 'pt_plugin_menu');
 add_action('init', 'country_init');
 add_action('init', 'create_country_post_type');
-add_action('init', 'create_provider_post_type');
 
 add_action("admin_post_parse_csv", "parse_csv");
 add_action("admin_post_nopriv_parse_csv", "parse_csv");
@@ -35,16 +34,16 @@ if (!defined('RC_TC_PLUGIN_URL')) {
 
 function pt_plugin_activation() {
     insert_countries_page();
+    flush_rewrite_rules();
 }
 
 function pt_plugin_deactivation() {
     $page = get_page_by_title("Countries");
-    $providers = new WP_Query(array("post_type" => "provider", 'posts_per_page' => -1));
     $countries = new WP_Query(array("post_type" => "country", 'posts_per_page' => -1));
-    if($providers->have_posts()){
-        while($providers->have_posts()){
-            $providers->the_post();
-            wp_delete_post(the_ID(), true);
+    if($countries->have_posts()){
+        while($countries->have_posts()){
+            $countries->the_post();
+            //wp_delete_post(the_ID(), true);
             
         }
         wp_reset_postdata();
@@ -84,15 +83,9 @@ function country_init() {
 }
 
 function create_country_post_type() {
-    $args = array();
+    $args = array("public" => true);
 
     register_post_type("country", $args);
-}
-
-function create_provider_post_type() {
-    $args = array();
-
-    register_post_type("provider", $args);
 }
 
 function insert_countries_page() {
@@ -107,43 +100,3 @@ function insert_countries_page() {
     wp_insert_post($args);
 }
 
-/*
- * there are unnessecery
- * 
-function pt_plugin_register_shortcodes() {
-    add_shortcode('country-list', 'country_list_shortcode');
-    add_shortcode('provider-list', 'provider_list_shortcode');
-}
-
-function country_list_shortcode() {
-    $countries = get_posts(array('post_type' => 'country', 'orderby' => 'title'));
-    $list = "";
-    if ($countries) {
-        $list = '<div class="country-list">';
-        foreach ($countries as $country) {
-            $list .= '<div>' . $country->title . '</div>';
-        }
-        $list .= '</div>';
-    }
-
-    return $list;
-}
-
-function provider_list_shortcode($atts) {
-    $provider_atts = shortcode_atts(array(
-        'country' => 'Country'
-            ), $atts);
-    $country = $provider_atts['country'];
-    $providers = get_posts(array('post_type' => 'provider', 'category' => $country));
-    if ($providers) {
-        $list = '<div class="provider-list">';
-        foreach ($providers as $provider) {
-            $list .= '<div>' . $provider->title . '</div>';
-        }
-        $list .= '</div>';
-    }
-
-    $list = "";
-    return $list;
-}
-*/
