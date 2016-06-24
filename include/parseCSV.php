@@ -30,7 +30,7 @@ function parse_csv() {
 
     foreach ($data as $record) {
         $i = 0;
-        if(!$record["Code Name"]){
+        if (!$record["Code Name"]) {
             continue;
         }
         $country = findCountry($record, $countriesList);
@@ -38,7 +38,7 @@ function parse_csv() {
             $providersList[] = $record;
             $countriesToProviders[$country][] = $record;
         } else {
-            if(strlen($record["Code"]) >= 5){
+            if (strlen($record["Code"]) >= 5) {
                 continue;
             }
             $countriesList[] = $record;
@@ -74,12 +74,11 @@ function parse_csv() {
         );
         $id = wp_insert_post($args);
         add_post_meta($id, 'rate', $country["Rate"]);
-        
+
         add_post_meta($id, 'code', min($codes));
     }
-// create posts for each provider and country nad check if it exists
-// 
-wp_redirect(site_url().'/wp-admin/options-general.php?page=price-table-plugin');
+
+    wp_redirect(site_url() . '/wp-admin/options-general.php?page=price-table-plugin');
 }
 
 function findCountry($record, $countries) {
