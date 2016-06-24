@@ -43,7 +43,7 @@ function pt_plugin_deactivation() {
     if($countries->have_posts()){
         while($countries->have_posts()){
             $countries->the_post();
-            //wp_delete_post(the_ID(), true);
+            //wp_delete_post(get_the_ID(), true);
             
         }
         wp_reset_postdata();

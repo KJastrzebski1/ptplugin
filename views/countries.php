@@ -5,7 +5,8 @@
 get_header();
 $args = array(
     'post_type' => 'country',
-    'posts_per_page' => -1
+    'posts_per_page' => -1,
+    'order' => 'ASC'
 );
 $query = new WP_Query($args);
 ?>
@@ -24,9 +25,9 @@ $query = new WP_Query($args);
                 <tr>
                     <?php
                     $query->the_post(); ?>
-                    <td></td>
+                    <td><?php echo (get_post_meta(get_the_ID(), "code", true)); ?></td>
                     <td><a href="<?php the_permalink(); ?>"><?php echo the_title(); ?></a></td>
-                    <td></td>
+                    <td><?php echo (get_post_meta(get_the_ID(), "rate", true)); ?></td>
                      
                 </tr> 
             <?php endwhile;
