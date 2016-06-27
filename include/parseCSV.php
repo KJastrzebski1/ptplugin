@@ -27,7 +27,6 @@ function parse_csv() {
     $countriesList = array();
     $providersList = array();
     $countriesToProviders = array();
-
     foreach ($data as $record) {
         $i = 0;
         if (!$record["Code Name"]) {
@@ -47,22 +46,28 @@ function parse_csv() {
             $i++;
         }
     }
+    
     foreach ($countriesList as $country) {
-        $content = "<table><thead><tr><th>Code</th><th>Name</th><th>Rate</th></tr></thead><tbody>";
-        $rates = array();
+        $content = "<table class='table country-table'><thead><tr><th>Destination</th><th>Code</th><th>Price Out Calls</th><th>Price Offline Calls</th></tr></thead><tbody>";
+        $ratesOut = array();
+        $ratesOffline = array();
         $codes = array();
         foreach ($countriesToProviders[$country["Code Name"]] as $provider) {
-            $rates[] = $provider["Rate"];
+            $ratesOut[] = $provider["Rate out"];
+            $ratesOffline[] = $provider["Rate offline"];
             $codes[] = $provider["Code"];
+            
         }
-        array_multisort($rates, SORT_ASC, $countriesToProviders[$country["Code Name"]]);
-        $country["Rate"] = $countriesToProviders[$country["Code Name"]][0]["Rate"];
+        array_multisort($ratesOut, SORT_ASC, $countriesToProviders[$country["Code Name"]]);
+        $country["Rate out"] = $countriesToProviders[$country["Code Name"]][0]["Rate out"];
+        $country["Rate offline"] = $countriesToProviders[$country["Code Name"]][0]["Rate offline"];
         foreach ($countriesToProviders[$country["Code Name"]] as $provider) {
 
             $content .= '<tr>';
-            $content .= '<td>' . $provider["Code"] . '</td>';
             $content .= '<td>' . $provider["Code Name"] . '</td>';
-            $content .= '<td>' . $provider["Rate"] . '</td>';
+            $content .= '<td>+' . $provider["Code"] . '</td>';
+            $content .= '<td>$' . $provider["Rate out"] . '</td>';
+            $content .= '<td>$' . $provider["Rate offline"] . '</td>';
             $content .= '</tr>';
         }
         $content .= "</tbody></table>";
@@ -73,11 +78,11 @@ function parse_csv() {
             'post_content' => $content,
         );
         $id = wp_insert_post($args);
-        add_post_meta($id, 'rate', $country["Rate"]);
-
+        add_post_meta($id, 'rate_out', $country["Rate out"]);
+        add_post_meta($id, 'rate_offline', $country["Rate offline"]);
         add_post_meta($id, 'code', min($codes));
     }
-
+    
     wp_redirect(site_url() . '/wp-admin/options-general.php?page=price-table-plugin');
 }
 

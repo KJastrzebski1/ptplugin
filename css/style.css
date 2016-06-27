@@ -1,1 +1,93 @@
+#all-rates{
+    text-align: center;
+    cursor: pointer;
+    font-weight: 700;
+}
+#letters-list{
+    margin: 20px 10%;
+}
+.input-group{
+    margin-top: 30px;
+}
+span.search-letters{
+    font-size: 26px;
+    font-weight: 700;
+    margin: 5px;
+    cursor: pointer;
+}
+#country-search{
+     font-weight: 800;
+    border: 1px solid #5A3C2D;
+    color: #5A3C2D;
+    border-radius: 4px;
+    font-size: 22px;
+    height: 42px;
+}
 
+span.search-letters.active{
+    font-size: 42px;
+}
+
+.stylish-input-group .input-group-addon{
+    background: white !important; 
+    border: 0;
+}
+.stylish-input-group .form-control{
+	
+}
+.stylish-input-group button{
+    font-size: 32px;
+    border:0;
+    background:transparent;
+}
+.search-bar{
+    height: 180px;
+    text-align: center;
+}
+.search-bar h1{
+    font-size: 52px;
+    font-weight: 900;
+}
+.rates{
+    background-color: #DED8D5;
+    font-weight: 700;
+}
+.rates img,
+.promo-image img{
+    width: 100%;
+}
+.promo-image{
+    margin-top: 80px; 
+}
+.container{
+    color: #5A3C2D;
+}
+
+.country-post{
+    margin-top: 30px;
+    
+}
+.country-post h2{
+    text-align: center;
+    font-size: 42px;
+    font-weight: 900;
+    margin: 15px;
+}
+.country-post a,
+.country-post a:hover,
+.rates a,
+.rates a:hover{
+    text-decoration: none;
+    color: #5A3C2D;
+}
+.table-container{
+    margin: 0 auto;
+    max-width: 920px;
+}
+.table.country-table td{
+    border-top: 1px solid #CCC9C8;
+}
+.table.country-table th{
+    border-bottom: 1px solid #CCC9C8;
+    color: #B09A8F;
+}
