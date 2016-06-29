@@ -2,7 +2,6 @@
 
 function parse_csv() {
     $csv = $_FILES["csv"];
-
 //parse CSV
     $file = fopen($csv["tmp_name"], "r");
     $headers = fgetcsv($file);
@@ -48,7 +47,7 @@ function parse_csv() {
     }
     
     foreach ($countriesList as $country) {
-        $content = "<table class='table country-table'><thead><tr><th>Destination</th><th>Code</th><th>Price Out Calls</th><th>Price Offline Calls</th></tr></thead><tbody>";
+        $content = "<table class='table country-table'><thead><tr><th>Destination</th><th>Code</th><th>Runo Out</th><th>Runo offline</th></tr></thead><tbody>";
         $ratesOut = array();
         $ratesOffline = array();
         $codes = array();
@@ -88,7 +87,7 @@ function parse_csv() {
 
 function findCountry($record, $countries) {
     foreach ($countries as $country) {
-        if ((strpos($record["Code"], $country["Code"]) === 0) || (strpos($record["Code Name"], $country["Code Name"]) === 0)) {
+        if (((strpos($record["Code"], $country["Code"]) === 0) || (strpos($record["Code Name"], $country["Code Name"]) === 0))) {
             return $country["Code Name"];
         }
     }

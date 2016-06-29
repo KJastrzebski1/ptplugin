@@ -1,4 +1,5 @@
 
+
 jQuery(document).ready(function ($) {
     var pt_search = '';
     var url = ajax_object.ajax_url;
@@ -11,6 +12,7 @@ jQuery(document).ready(function ($) {
                 resolve(data);
             }});
     });
+    showHideVas();
     countries.then(function (result) {
         result = JSON.parse(result);
         $('#country-search').autocomplete({
@@ -30,7 +32,7 @@ jQuery(document).ready(function ($) {
             }
         });
     });
-    
+
     $('#country-search').keyup(function () {
         toggleActive();
         pt_search = $("#country-search").val().toLowerCase();
@@ -49,7 +51,7 @@ jQuery(document).ready(function ($) {
         pt_search = '';
         showHideCountries();
     });
-    
+
     function toggleActive() {
         $("#letters-list").find('.active').each(function () {
             $(this).toggleClass('active');
@@ -59,12 +61,15 @@ jQuery(document).ready(function ($) {
         onlyFirst = typeof onlyFirst !== 'undefined' ? onlyFirst : false;
 
         $('.table tbody tr').each(function () {
-            var name = $(this).children('.country-name').html().toLowerCase();
+            var name = $(this).children('.country-name').children('a').html().toLowerCase();
             if (onlyFirst) {
+
                 if (name.indexOf(pt_search) !== 0) {
+
                     $(this).hide();
                 } else {
                     $(this).show();
+
                 }
             } else {
                 if (name.indexOf(pt_search) === -1) {
@@ -75,6 +80,33 @@ jQuery(document).ready(function ($) {
             }
 
 
+        });
+    }
+    function showHideVas() {
+        var opt = new Promise(function (resolve, reject) {
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {'action': 'get_option_show_vas'},
+                success: function (data) {
+                    resolve(data);
+                }});
+        });
+        opt.then(function (result) {
+            result =JSON.parse(result);
+            if (result == 1) {
+                
+                $('.table tbody tr').each(function () {
+                    var name = $(this).children('td').html().toLowerCase();
+                    if (name.indexOf('vas') > -1 ) {
+                        
+                        $(this).hide();
+                    } else {
+                        $(this).show();
+
+                    }
+                });
+            }
         });
     }
 });
